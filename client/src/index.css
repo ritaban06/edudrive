@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Import react-pdf-viewer styles - must be before Tailwind */
+@import '@react-pdf-viewer/core/lib/styles/index.css';
+@import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+
+/* Custom PDF viewer styles */
+.pdf-viewer-container {
+  height: 100%;
+  width: 100%;
+  background: white;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.pdf-viewer-container .rpv-core__viewer {
+  border: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.pdf-viewer-container .rpv-core__page {
+  margin: 0 auto;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Disable text selection and context menu for PDF content */
+.pdf-viewer-container canvas {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  pointer-events: none;
+}
+
+.pdf-viewer-container .rpv-core__text-layer {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  pointer-events: none;
+}
+
+/* Hide download/print buttons from PDF.js toolbar */
+.pdf-viewer-container button[title*="Download"],
+.pdf-viewer-container button[title*="Print"],
+.pdf-viewer-container button[title*="Open"],
+.pdf-viewer-container button[title*="Save"],
+.pdf-viewer-container .rpv-download,
+.pdf-viewer-container .rpv-print,
+.pdf-viewer-container .rpv-open,
+.pdf-viewer-container .rpv-toolbar__item--download,
+.pdf-viewer-container .rpv-toolbar__item--print,
+.pdf-viewer-container .rpv-toolbar__item--open,
+.pdf-viewer-container [data-testid="toolbar__download-button"],
+.pdf-viewer-container [data-testid="toolbar__print-button"],
+.pdf-viewer-container [data-testid="toolbar__open-button"],
+.pdf-viewer-container [data-testid="more-actions__menu"] {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Hide any buttons with download/print/open icons or text */
+.pdf-viewer-container button:has(svg[data-testid*="download"]),
+.pdf-viewer-container button:has(svg[data-testid*="print"]),
+.pdf-viewer-container button:has(svg[data-testid*="open"]),
+.pdf-viewer-container .rpv-core__display--hidden {
+  display: none !important;
+}
+
+/* Disable context menu globally for PDF viewer */
+.pdf-viewer-container * {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    background-color: #faf5ff; /* purple-50 */
+  }
+  
+  @keyframes blob {
+    0% {
+      transform: translate(0px, 0px) scale(1);
+    }
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+    100% {
+      transform: translate(0px, 0px) scale(1);
+    }
+  }
+  
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+  
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary-200 hover:bg-secondary-300 text-secondary-800 font-medium px-4 py-2 rounded-lg transition-colors duration-200;
+  }
+  
+  .input-field {
+    @apply w-full px-3 py-2 border border-secondary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+  }
+  
+  .gradient-bg {
+    @apply bg-gradient-to-br from-primary-900 to-primary-800;
+  }
+  
+  .gradient-accent {
+    @apply bg-gradient-to-r from-primary-600 to-primary-500;
+  }
+}
+
+@layer utilities {
+  /* Mobile-first responsive utilities */
+  .container-mobile {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Grid responsive utilities */
+  .grid-responsive {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
+  }
+  
+  .grid-responsive-4 {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+  }
+  
+  /* Text responsive utilities */
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+  
+  .text-responsive-base {
+    @apply text-sm sm:text-base;
+  }
+  
+  /* Spacing responsive utilities */
+  .space-y-responsive {
+    @apply space-y-4 sm:space-y-6 lg:space-y-8;
+  }
+  
+  .p-responsive {
+    @apply p-4 sm:p-6 lg:p-8;
+  }
+  
+  /* Button responsive utilities */
+  .btn-responsive {
+    @apply px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base;
+  }
+  
+  /* Touch-friendly tap targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+  
+  /* Safe area padding for mobile devices */
+  .safe-area-padding {
+    @apply pt-safe pb-safe pl-safe pr-safe;
+  }
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  /* Improve tap targets on mobile */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Ensure text is readable on mobile */
+  body {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* PDF viewer mobile optimizations */
+  .pdf-viewer-container {
+    touch-action: pan-x pan-y;
+  }
+  
+  /* Improve form inputs on mobile */
+  input, select, textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Landscape mobile optimizations */
+@media (max-width: 768px) and (orientation: landscape) {
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .logo, img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}

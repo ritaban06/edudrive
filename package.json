@@ -1,0 +1,26 @@
+{
+  "name": "edudrive-pnpm-workspace",
+  "private": true,
+  "description": "Secure PDF study material platform",
+  "license": "MIT",
+  "workspaces": [
+    "admin",
+    "backend", 
+    "client"
+  ],
+  "scripts": {
+    "setup": "node setup.js",
+    "dev:all": "pnpm --parallel -r --filter ./backend --filter ./client --filter ./admin run dev",
+    "dev:backend": "pnpm --filter edudrive-backend dev",
+    "dev:admin": "pnpm --filter edudrive-admin dev",
+    "dev:client": "pnpm --filter edudrive-client dev",
+    "build:all": "pnpm --filter edudrive-admin build && pnpm --filter edudrive-client build",
+    "start:backend": "pnpm --filter edudrive-backend start",
+    "clean": "pnpm --filter edudrive-admin clean && pnpm --filter edudrive-client clean && pnpm --filter edudrive-backend clean",
+    "lint": "pnpm --filter edudrive-admin lint && pnpm --filter edudrive-client lint && pnpm --filter edudrive-backend lint"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

@@ -1,0 +1,9 @@
+packages:
+  - admin
+  - backend
+  - client
+
+onlyBuiltDependencies:
+  - canvas
+  - esbuild
+  - sharp
