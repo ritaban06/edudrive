@@ -35,6 +35,7 @@ edudrive/
 
 <p align="center">
   <img src="screenshots/admin_folders.png" width="45%" />
+  <img src="screenshots/admin_users.png" width="45%" />
 </p>
 
 ### Client
