@@ -13,8 +13,8 @@
   "backgroundColor": "#000000",
   "enableNotifications": true,
   "startUrl": "/",
-  "iconUrl": "http://edudrive-client.vercel.app/icons/icon-512.png",
-  "maskableIconUrl": "http://edudrive-client.vercel.app/icons/icon-512.png",
+  "iconUrl": "https://edudrive-client.vercel.app/icons/icon-512.png",
+  "maskableIconUrl": "https://edudrive-client.vercel.app/icons/icon-512.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "E:\\projects\\edudrive\\android.keystore",
@@ -24,7 +24,7 @@
   "appVersionCode": 2,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
-  "webManifestUrl": "http://edudrive-client.vercel.app/manifest.json",
+  "webManifestUrl": "https://edudrive-client.vercel.app/manifest.json",
   "fallbackType": "customtabs",
   "features": {},
   "alphaDependencies": {
@@ -33,7 +33,7 @@
   "enableSiteSettingsShortcut": true,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
-  "fullScopeUrl": "http://edudrive-client.vercel.app/",
+  "fullScopeUrl": "https://edudrive-client.vercel.app/",
   "minSdkVersion": 21,
   "orientation": "portrait",
   "fingerprints": [],
