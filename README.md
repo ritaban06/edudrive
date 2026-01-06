@@ -43,6 +43,10 @@ edudrive/
   <img src="screenshots/client_login.png" width="45%" />
 </p>
 
+<p align="center">
+  <img src="screenshots/client_dashboard.png" width="45%" />
+  <img src="screenshots/client_pdfviewer.png" width="45%" />
+</p>
 
 ---
 
