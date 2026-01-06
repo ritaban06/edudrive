@@ -31,6 +31,12 @@ edudrive/
   <img src="screenshots/admin_login.png" width="300" />
   <img src="screenshots/admin_dashboard.png" width="300" />
   <img src="screenshots/admin_folders.png" width="300" />
+</div>  
+
+### Client
+<div style="display: flex; overflow-x: auto; gap: 10px;">
+  <img src="screenshots/client_home.png" width="300" />
+  <img src="screenshots/client_login.png" width="300" />
 </div>
 
 ---
