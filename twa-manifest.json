@@ -1,10 +1,10 @@
 {
-  "packageId": "edudrive.ritaban.com",
-  "host": "edudrive-client.ritaban.xyz",
+  "packageId": "app.edudrive.ritaban",
+  "host": "edudrive-client.vercel.app",
   "name": "EduDrive",
   "launcherName": "EduDrive",
   "display": "standalone",
-  "themeColor": "#7B5AFF",
+  "themeColor": "#1B1C4B",
   "themeColorDark": "#000000",
   "navigationColor": "#000000",
   "navigationColorDark": "#000000",
@@ -13,18 +13,18 @@
   "backgroundColor": "#000000",
   "enableNotifications": true,
   "startUrl": "/",
-  "iconUrl": "https://edudrive-client.ritaban.me/pwa-512x512.png",
-  "maskableIconUrl": "https://edudrive-client.ritaban.me/pwa-512x512.png",
+  "iconUrl": "http://edudrive-client.vercel.app/icons/icon-512.png",
+  "maskableIconUrl": "http://edudrive-client.vercel.app/icons/icon-512.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
-    "path": "E:\\projects\\edudrive-new\\client\\android.keystore",
-    "alias": "android"
+    "path": "E:\\projects\\edudrive\\android.keystore",
+    "alias": "edudrive"
   },
-  "appVersionName": "6",
-  "appVersionCode": 6,
+  "appVersionName": "2",
+  "appVersionCode": 2,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
-  "webManifestUrl": "https://edudrive-client.ritaban.me/manifest.json",
+  "webManifestUrl": "http://edudrive-client.vercel.app/manifest.json",
   "fallbackType": "customtabs",
   "features": {},
   "alphaDependencies": {
@@ -33,7 +33,7 @@
   "enableSiteSettingsShortcut": true,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
-  "fullScopeUrl": "https://edudrive-client.ritaban.me/",
+  "fullScopeUrl": "http://edudrive-client.vercel.app/",
   "minSdkVersion": 21,
   "orientation": "portrait",
   "fingerprints": [],
@@ -43,5 +43,5 @@
   "fileHandlers": [],
   "launchHandlerClientMode": "",
   "displayOverride": [],
-  "appVersion": "6"
+  "appVersion": "2"
 }
