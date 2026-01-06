@@ -139,7 +139,7 @@ const HybridGoogleLogin = () => {
             Or if not registered for EduDrive yet,
           </p>
           
-          <button className="border-solid border-2 px-8 py-2 border-purple-500 text-purple-500 hover:text-white hover:bg-purple-600 transition-all duration-300 rounded-md px-4 py-2 mt-2" onClick={() => window.open('https://forms.gle/1GCxyjUxntzAKmDt8', '_blank')}>Join EDUDRIVE</button>
+          <button className="border-solid border-2 px-8 py-2 border-purple-500 text-purple-500 hover:text-white hover:bg-purple-600 transition-all duration-300 rounded-md px-4 py-2 mt-2" onClick={() => window.open('https://forms.gle/6p9Pc5WZbVEPnvF56', '_blank')}>Join EDUDRIVE</button>
         </div>
         {/* Debug info for development - commented out since platformInfo is disabled */}
         {/* {import.meta.env.DEV && (
