@@ -4,8 +4,8 @@
 [![React](https://img.shields.io/badge/React-19.1.0-blue?logo=react)](https://reactjs.org/)
 [![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas-green?logo=mongodb)](https://www.mongodb.com/atlas)
 [![Vite](https://img.shields.io/badge/Vite-7.0.0-646CFF?logo=vite)](https://vitejs.dev/)
-[![Vercel](https://img.shields.io/badge/Vercel-Full%20Stack-black?logo=vercel)](https://vercel.com/)
-[![DigitalOcean](https://img.shields.io/badge/DigitalOcean-Backend%20Only-blue?logo=digitalocean)](https://www.digitalocean.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-Admin%20%26%20Client-black?logo=vercel)](https://vercel.com/)
+[![Render](https://img.shields.io/badge/Render-Backend%20Only-purple?logo=render)](https://render.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
 A secure PDF viewing platform built with the MERN stack, featuring role-based access control, Google OAuth integration, and Google Drive storage. Now with Capacitor integration for Android apps.
@@ -157,7 +157,7 @@ pnpm dev:client
 - **Storage**: Google Drive
 - **Package Manager**: PNPM Workspaces
 - **Google Cloud**: Google Sheets API
-- **Deployment**: Vercel (frontend), Vercel/DigitalOcean (backend)
+- **Deployment**: Vercel (frontend), Vercel/DigitalOcean/Render (backend)
 
 ---
 
