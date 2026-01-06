@@ -25,6 +25,16 @@ edudrive/
 └── pnpm-workspace.yaml
 ```
 
+## Screenhots
+### Admin
+<div style="display: flex; overflow-x: auto; gap: 10px;">
+  <img src="screenshots/admin_login.png" width="300" />
+  <img src="screenshots/admin_dashboard.png" width="300" />
+  <img src="screenshots/admin_folders.png" width="300" />
+</div>
+
+---
+
 ## 🚀 Quick Start
 
 ### Prerequisites
