@@ -20,8 +20,8 @@
     "path": "E:\\projects\\edudrive\\android.keystore",
     "alias": "edudrive"
   },
-  "appVersionName": "2",
-  "appVersionCode": 2,
+  "appVersionName": "4",
+  "appVersionCode": 4,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://edudrive-client.vercel.app/manifest.json",
@@ -36,12 +36,16 @@
   "fullScopeUrl": "https://edudrive-client.vercel.app/",
   "minSdkVersion": 21,
   "orientation": "portrait",
-  "fingerprints": [],
+  "fingerprints": [
+    {
+      "value": "AD:47:66:62:69:E7:F2:AE:EE:99:91:71:39:29:BE:FA:36:38:DA:57:76:0E:AA:52:E9:25:F4:BD:4F:6C:49:03"
+    }
+  ],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
   "protocolHandlers": [],
   "fileHandlers": [],
   "launchHandlerClientMode": "",
   "displayOverride": [],
-  "appVersion": "2"
+  "appVersion": "4"
 }
