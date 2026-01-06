@@ -7,8 +7,8 @@ import toast from 'react-hot-toast';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+    username: 'admin@edudrive',
+    password: 'edudrive@2026',
   });
   const [showPassword, setShowPassword] = useState(false);
   const { login, isLoading, error } = useAuth();
