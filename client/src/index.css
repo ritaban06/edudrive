@@ -86,6 +86,54 @@
   user-select: none;
 }
 
+/* CSS-only fullscreen implementation */
+.pdf-fullscreen-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important; /* Dynamic viewport height for mobile */
+  padding: 0 !important;
+  margin: 0 !important;
+  z-index: 2147483647 !important; /* Maximum z-index value */
+  background-color: rgba(0, 0, 0, 0.95) !important;
+}
+
+.pdf-fullscreen-container {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important; /* Dynamic viewport height for mobile */
+  border-radius: 0 !important;
+  margin: 0 !important;
+}
+
+/* Ensure fullscreen works properly on mobile devices */
+@media (max-width: 768px) {
+  .pdf-fullscreen-overlay {
+    /* Force proper positioning on mobile */
+    position: fixed !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .pdf-fullscreen-container {
+    /* Prevent any unwanted scrolling or overflow on mobile */
+    overflow: hidden;
+  }
+}
+
+/* Hide header/navbar when PDF viewer is in fullscreen mode */
+body.pdf-viewer-fullscreen header {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

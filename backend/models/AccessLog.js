@@ -9,11 +9,7 @@ const accessLogSchema = new mongoose.Schema({
   pdf: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'PDF',
-    required: function() {
-      // PDF is required for PDF-related actions, but not for auth actions
-      const authActions = ['login', 'logout', 'register', 'forced_logout', 'google_login'];
-      return !authActions.includes(this.action);
-    }
+    default: null
   },
   action: {
     type: String,
@@ -99,9 +95,16 @@ accessLogSchema.statics.logAccess = function(data) {
     metadata: data.metadata || {}
   };
 
-  // Only include PDF if provided (for auth actions, there's no PDF)
+  // Only include PDF if provided and is a valid MongoDB ObjectId (for auth actions, there's no PDF)
+  // Skip storing Google Drive file IDs as they're not valid ObjectIds
   if (data.pdfId) {
-    logData.pdf = data.pdfId;
+    // Check if it's a valid MongoDB ObjectId (24-char hex string)
+    if (/^[a-fA-F0-9]{24}$/.test(data.pdfId)) {
+      logData.pdf = data.pdfId;
+    } else {
+      // For Google Drive file IDs, store in metadata instead
+      logData.metadata.googleDriveFileId = data.pdfId;
+    }
   }
 
   // For folder actions, include folderId and changes in metadata

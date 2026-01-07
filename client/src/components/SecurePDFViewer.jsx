@@ -2,8 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import { toolbarPlugin, MoreActionsPopover } from '@react-pdf-viewer/toolbar';
-import { fullScreenPlugin } from '@react-pdf-viewer/full-screen';
-import '@react-pdf-viewer/full-screen/lib/styles/index.css';
 import { X, Maximize, Minimize } from 'lucide-react';
 import { pdfAPI } from '../api';
 import toast from 'react-hot-toast';
@@ -15,6 +13,7 @@ const SecurePDFViewer = ({ pdfId, isOpen, onClose }) => {
   const [error, setError] = useState(null);
   const [pdfInfo, setPdfInfo] = useState(null);
   const [useIframeFallback, setUseIframeFallback] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   // --- Annotation State ---
   // const [annotations, setAnnotations] = useState([]); // [{page, type, rect, text, note}]
   // const [selectedText, setSelectedText] = useState(null);
@@ -26,24 +25,53 @@ const SecurePDFViewer = ({ pdfId, isOpen, onClose }) => {
   const fetchingRef = useRef(false);
   const currentPdfIdRef = useRef(null);
 
-  // Full screen plugin
-  const fullScreenPluginInstance = fullScreenPlugin();
-  const { EnterFullScreen } = fullScreenPluginInstance;
-
   // Secure toolbar plugin (disables all except fullscreen)
-const secureToolbarPluginInstance = toolbarPlugin({
-  transform: (slot) => ({
-    // Keep only FullScreen
-    ...slot,
-    Open: () => <></>,
-    Download: () => <></>,
-    DownloadMenuItem: () => <></>,
-    Print: () => <></>,
-    PrintMenuItem: () => <></>,
-    MoreActions: () => <></>,
-    MoreActionsPopover: () => <></>,
-  }),
-});
+  const secureToolbarPluginInstance = toolbarPlugin({
+    renderDefaultToolbar: (Toolbar) => (
+      <Toolbar>
+        {(slots) => {
+          const {
+            CurrentPageInput,
+            GoToNextPage,
+            GoToPreviousPage,
+            NumberOfPages,
+            ShowSearchPopover,
+            Zoom,
+            ZoomIn,
+            ZoomOut,
+          } = slots;
+          return (
+            <>
+              <div style={{ padding: '0px 2px', marginLeft: 'auto' }}>
+                <ShowSearchPopover />
+              </div>
+              <div style={{ padding: '0px 2px' }}>
+                <ZoomOut />
+              </div>
+              <div style={{ padding: '0px 2px' }}>
+                <Zoom />
+              </div>
+              <div style={{ padding: '0px 2px' }}>
+                <ZoomIn />
+              </div>
+              <div style={{ padding: '0px 2px', marginLeft: '4px' }}>
+                <GoToPreviousPage />
+              </div>
+              <div style={{ padding: '0px 2px', width: '4rem' }}>
+                <CurrentPageInput />
+              </div>
+              <div style={{ padding: '0px 2px' }}>
+                / <NumberOfPages />
+              </div>
+              <div style={{ padding: '0px 2px' }}>
+                <GoToNextPage />
+              </div>
+            </>
+          );
+        }}
+      </Toolbar>
+    ),
+  });
 
   // Create default layout plugin instance with lazy loading enabled
   const defaultLayoutPluginInstance = defaultLayoutPlugin({
@@ -57,6 +85,7 @@ const secureToolbarPluginInstance = toolbarPlugin({
       }
       return null;
     },
+    renderToolbar: secureToolbarPluginInstance.renderDefaultToolbar,
   });
 
   // Reset state when modal closes
@@ -472,12 +501,26 @@ const secureToolbarPluginInstance = toolbarPlugin({
     };
   }, [isOpen]);
 
+  // Add fullscreen class to body when in fullscreen mode
+  React.useEffect(() => {
+    if (isFullscreen) {
+      document.body.classList.add('pdf-viewer-fullscreen');
+    } else {
+      document.body.classList.remove('pdf-viewer-fullscreen');
+    }
+    
+    return () => {
+      document.body.classList.remove('pdf-viewer-fullscreen');
+    };
+  }, [isFullscreen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] pt-20 p-2 sm:p-4" style={{ userSelect: 'none' }}>
-      <div className="bg-white rounded-lg shadow-xl w-full h-full max-w-6xl max-h-[85vh] sm:max-h-[80vh] flex flex-col">
+    <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center ${isFullscreen ? 'pdf-fullscreen-overlay' : 'z-[9999] pt-20 p-2 sm:p-4'}`} style={{ userSelect: 'none' }}>
+      <div className={`bg-white rounded-lg shadow-xl w-full h-full flex flex-col ${isFullscreen ? 'pdf-fullscreen-container' : 'max-w-6xl max-h-[85vh] sm:max-h-[80vh]'}`}>
         {/* Header */}
+        {!isFullscreen && (
         <div className="flex items-center justify-between p-3 sm:p-4 border-b">
           <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
             <h2 className="text-base sm:text-xl font-semibold text-gray-800 truncate">
@@ -495,21 +538,17 @@ const secureToolbarPluginInstance = toolbarPlugin({
   </div> */}
 
   {/* Fullscreen Button */}
-  <EnterFullScreen>
-    {(props) => (
-      <button
-        onClick={props.onClick}
-        className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-        title={props.isFullScreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-      >
-        {props.isFullScreen ? (
-          <Minimize size={18} className="sm:w-5 sm:h-5" />
-        ) : (
-          <Maximize size={18} className="sm:w-5 sm:h-5" />
-        )}
-      </button>
+  <button
+    onClick={() => setIsFullscreen(!isFullscreen)}
+    className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+    title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+  >
+    {isFullscreen ? (
+      <Minimize size={18} className="sm:w-5 sm:h-5" />
+    ) : (
+      <Maximize size={18} className="sm:w-5 sm:h-5" />
     )}
-  </EnterFullScreen>
+  </button>
 
   {/* Close Button */}
   <button
@@ -522,9 +561,24 @@ const secureToolbarPluginInstance = toolbarPlugin({
 </div>
 
         </div>
+        )}
 
         {/* Content */}
         <div className="flex-1 overflow-hidden" ref={viewerRef} style={{ position: 'relative' }}>
+          {/* Floating Exit Fullscreen Button - only visible in fullscreen */}
+          {isFullscreen && (
+            <button
+              onClick={() => setIsFullscreen(false)}
+              className="absolute top-4 right-4 z-[999999] bg-white/90 hover:bg-white text-gray-800 p-3 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-110"
+              title="Exit Fullscreen"
+              style={{
+                backdropFilter: 'blur(8px)',
+              }}
+            >
+              <Minimize size={20} />
+            </button>
+          )}
+
           {/* Loading State */}
           {isLoading && (
             <div className="flex items-center justify-center h-full">
@@ -572,7 +626,7 @@ const secureToolbarPluginInstance = toolbarPlugin({
               <Worker workerUrl="/pdfjs/pdf.worker.min.js">
                 <Viewer
                   fileUrl={pdfUrl}
-                  plugins={[defaultLayoutPluginInstance, fullScreenPluginInstance]}
+                  plugins={[defaultLayoutPluginInstance]}
                   onDocumentLoad={(e) => {
                     // console.log('✅ PDF Document loaded successfully!');
                     // console.log('Number of pages:', e.doc.numPages);
@@ -643,10 +697,12 @@ const secureToolbarPluginInstance = toolbarPlugin({
         </div>
 
         {/* Footer */}
+        {!isFullscreen && (
         <div className="p-4 bg-gray-100 border-t text-center text-sm text-gray-600">
           <p>This PDF is protected and can only be viewed through EduDrive.</p>
           {/* <p className="text-xs text-red-500 mt-1">Download, Print, and Right-click are disabled</p> */}
         </div>
+        )}
       </div>
     </div>
   );
