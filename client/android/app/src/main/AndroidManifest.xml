@@ -26,6 +26,16 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="edudrive" android:host="app-login-success" />
             </intent-filter>
+            
+            <!-- Handle client URL in app instead of browser -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data 
+                    android:scheme="https"
+                    android:host="edudrive-client.vercel.app" />
+            </intent-filter>
         </activity>
 
         <provider
