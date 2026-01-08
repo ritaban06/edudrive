@@ -1,8 +1,0 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "app.edudrive.ritaban",
-        "sha256_cert_fingerprints": ["AD:47:66:62:69:E7:F2:AE:EE:99:91:71:39:29:BE:FA:36:38:DA:57:76:0E:AA:52:E9:25:F4:BD:4F:6C:49:03"]
-      }
-    }]

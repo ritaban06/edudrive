@@ -12,7 +12,9 @@
       "*.googleusercontent.com",
       "localhost"
     ],
-    "cleartext": true
+    "cleartext": true,
+    "hostname": "localhost",
+    "iosScheme": "capacitor"
   },
   "android": {
     "buildOptions": {
