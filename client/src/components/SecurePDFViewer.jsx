@@ -182,9 +182,10 @@ const SecurePDFViewer = ({ pdfId, isOpen, onClose }) => {
             method: 'GET',
             headers: {
               'Accept': 'application/pdf',
-              'Content-Type': 'application/pdf'
+              'Content-Type': 'application/pdf',
+              'Authorization': `Bearer ${token}`
             },
-            credentials: 'omit',
+            credentials: 'include',
             mode: 'cors'
           });
 
@@ -196,7 +197,10 @@ const SecurePDFViewer = ({ pdfId, isOpen, onClose }) => {
 
           // Check content type to prevent binary downloads
           const contentType = pdfResponse.headers.get('content-type');
-          if (contentType && !contentType.includes('application/pdf')) {
+          console.log('[SecurePDFViewer] Content-Type:', contentType);
+          
+          // Accept both PDF and octet-stream (sometimes PDFs are served as binary)
+          if (contentType && !contentType.includes('application/pdf') && !contentType.includes('octet-stream')) {
             console.warn('[SecurePDFViewer] Unexpected content type:', contentType);
             throw new Error(`Expected PDF but received: ${contentType}`);
           }
@@ -218,22 +222,16 @@ const SecurePDFViewer = ({ pdfId, isOpen, onClose }) => {
 
           setPdfUrl(blobUrl);
           setPdfInfo(response.data.pdf);
+          setUseIframeFallback(false);
           // console.log('[SecurePDFViewer] PDF blob URL set successfully');
 
         } catch (fetchError) {
           console.error('[SecurePDFViewer] Failed to fetch PDF content from proxy:', fetchError);
           
-          // Check if this is a download trigger issue
-          if (fetchError.message.includes('content-type') || fetchError.message.includes('binary')) {
-            setError('PDF format not supported in viewer. Please try again.');
-            return;
-          }
-          
-          // Only use direct URL as last resort and with proper iframe handling
-          console.log('[SecurePDFViewer] Using iframe fallback for direct proxy URL');
-          setUseIframeFallback(true);
-          setPdfUrl(response.data.viewUrl);
-          setPdfInfo(response.data.pdf);
+          // For Android: Don't use iframe fallback as it shows websites
+          // Instead show error and let user retry
+          setError('Failed to load PDF. Please check your connection and try again.');
+          toast.error('Failed to load PDF');
         }
       } else {
         // console.error('[SecurePDFViewer] No viewUrl in response:', response.data);
