@@ -8,8 +8,11 @@
       "edudrive-client.vercel.app",
       "accounts.google.com",
       "*.googleapis.com",
+      "edudrive.onrender.com",
+      "*.googleusercontent.com",
       "localhost"
-    ]
+    ],
+    "cleartext": true
   },
   "android": {
     "buildOptions": {

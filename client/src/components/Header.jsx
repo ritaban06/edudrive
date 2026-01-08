@@ -129,6 +129,8 @@ const Header = () => {
                 src={user.picture}
                 alt={user.name}
                 className="w-8 h-8 rounded-full object-cover"
+                referrerPolicy="no-referrer"
+                crossOrigin="anonymous"
                 onError={(e) => {
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'flex';
@@ -178,6 +180,8 @@ const Header = () => {
               src={user.picture}
               alt={user.name}
               className="w-6 h-6 rounded-full object-cover"
+              referrerPolicy="no-referrer"
+              crossOrigin="anonymous"
             />
           ) : (
             <div className="w-6 h-6 bg-gradient-to-r from-indigo-600 to-purple-500 rounded-full flex items-center justify-center">
