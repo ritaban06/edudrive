@@ -258,13 +258,17 @@ router.post('/login', [
 // Google OAuth redirect - Initiates redirect-based OAuth flow
 router.get('/google', (req, res) => {
   try {
+    // Store platform info in session/state to know where to redirect after OAuth
+    const platform = req.query.platform || 'web';
+    
     const authUrl = googleWebClient.generateAuthUrl({
       access_type: 'offline',
       scope: ['openid', 'email', 'profile'],
-      prompt: 'consent'
+      prompt: 'consent',
+      state: JSON.stringify({ platform }) // Pass platform info through OAuth flow
     });
     
-    console.log('Redirecting to Google OAuth:', authUrl);
+    console.log('Redirecting to Google OAuth:', authUrl, 'Platform:', platform);
     res.redirect(authUrl);
   } catch (error) {
     console.error('Google OAuth redirect error:', error);
@@ -278,16 +282,35 @@ router.get('/google', (req, res) => {
 // Google OAuth callback - Handles redirect from Google
 router.get('/google/callback', async (req, res) => {
   try {
-    const { code, error } = req.query;
+    const { code, error, state } = req.query;
+    
+    // Extract platform from state parameter
+    let platform = 'web';
+    if (state) {
+      try {
+        const stateData = JSON.parse(state);
+        platform = stateData.platform || 'web';
+      } catch (e) {
+        console.error('Failed to parse state:', e);
+      }
+    }
+    
+    console.log('OAuth callback - Platform:', platform);
 
     // Handle OAuth errors
     if (error) {
       console.error('Google OAuth error:', error);
-      return res.redirect(`${CLIENT_URL}/login?error=${encodeURIComponent(error)}`);
+      const errorUrl = platform === 'android' 
+        ? `edudrive://login?error=${encodeURIComponent(error)}`
+        : `${CLIENT_URL}/login?error=${encodeURIComponent(error)}`;
+      return res.redirect(errorUrl);
     }
 
     if (!code) {
-      return res.redirect(`${CLIENT_URL}/login?error=${encodeURIComponent('No authorization code received')}`);
+      const errorUrl = platform === 'android'
+        ? `edudrive://login?error=${encodeURIComponent('No authorization code received')}`
+        : `${CLIENT_URL}/login?error=${encodeURIComponent('No authorization code received')}`;
+      return res.redirect(errorUrl);
     }
 
     // Exchange authorization code for tokens
@@ -399,25 +422,33 @@ router.get('/google/callback', async (req, res) => {
       path: '/'
     });
 
-    // Detect if request is from Android app (Capacitor sends a specific user agent)
-    const userAgent = req.get('User-Agent') || '';
-    const isAndroidApp = userAgent.includes('Capacitor') || userAgent.includes('edudrive');
-    
-    // Redirect to success page with token in URL
-    // Use custom URL scheme for Android app, regular URL for web
-    const redirectUrl = isAndroidApp 
+    // Use platform from state to determine redirect URL
+    const redirectUrl = platform === 'android'
       ? `edudrive://app-login-success?token=${token}`
       : `${CLIENT_URL}/app-login-success?token=${token}`;
     
+    console.log('Redirecting to:', redirectUrl);
     res.redirect(redirectUrl);
 
   } catch (error) {
     console.error('Google OAuth callback error:', error);
     
-    // Detect platform for error redirect too
-    const userAgent = req.get('User-Agent') || '';
-    const isAndroidApp = userAgent.includes('Capacitor') || userAgent.includes('edudrive');
-    const errorUrl = isAndroidApp
+    // Try to get platform from state, fallback to user agent detection
+    let platform = 'web';
+    try {
+      if (req.query.state) {
+        const stateData = JSON.parse(req.query.state);
+        platform = stateData.platform || 'web';
+      }
+    } catch (e) {
+      // Fallback to user agent detection
+      const userAgent = req.get('User-Agent') || '';
+      if (userAgent.includes('Capacitor') || userAgent.includes('edudrive')) {
+        platform = 'android';
+      }
+    }
+    
+    const errorUrl = platform === 'android'
       ? `edudrive://login?error=${encodeURIComponent('Authentication failed. Please try again.')}`
       : `${CLIENT_URL}/login?error=${encodeURIComponent('Authentication failed. Please try again.')}`;
     

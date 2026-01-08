@@ -1,6 +1,8 @@
 // Redirect-based Google OAuth utility
 // Use this for both web and Capacitor Android apps
 
+import { Capacitor } from '@capacitor/core';
+
 const BACKEND_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
 /**
@@ -9,8 +11,15 @@ const BACKEND_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http:/
  * Capacitor will automatically open the system browser (Chrome)
  */
 export const initiateGoogleOAuth = () => {
+  // Detect if running in Capacitor Android app
+  const isNative = Capacitor.isNativePlatform();
+  const platform = Capacitor.getPlatform(); // 'android', 'ios', or 'web'
+  
+  // Add platform parameter to OAuth URL so backend knows where to redirect
+  const oauthUrl = `${BACKEND_URL}/api/auth/google?platform=${platform}`;
+  
   // Redirect to backend OAuth endpoint
-  window.location.href = `${BACKEND_URL}/api/auth/google`;
+  window.location.href = oauthUrl;
 };
 
 /**
