@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 import { handleOAuthCallback } from '../utils/googleOAuthRedirect';
-import { useAuth } from '../contexts/AuthContext';
+import { authAPI } from '../api';
 
 /**
  * OAuth Success Page
@@ -11,7 +11,6 @@ import { useAuth } from '../contexts/AuthContext';
  */
 const AppLoginSuccess = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
   const [status, setStatus] = useState('processing'); // processing, success, error
   const [error, setError] = useState('');
 
@@ -23,15 +22,21 @@ const AppLoginSuccess = () => {
         if (result.success) {
           // Store token in localStorage
           localStorage.setItem('authToken', result.token);
+          localStorage.setItem('token', result.token);
           
-          // Get user info from cookie or localStorage
-          const userStr = localStorage.getItem('user');
-          if (userStr) {
-            try {
-              const user = JSON.parse(userStr);
-              console.log('User info found:', user);
-            } catch (e) {
-              console.error('Failed to parse user info:', e);
+          // Fetch user profile from backend using the token
+          try {
+            const response = await authAPI.getProfile();
+            if (response.data.user) {
+              localStorage.setItem('user', JSON.stringify(response.data.user));
+              console.log('User profile fetched:', response.data.user);
+            }
+          } catch (apiError) {
+            console.error('Failed to fetch user profile:', apiError);
+            // Check if user_info exists in cookie as fallback
+            const userStr = localStorage.getItem('user');
+            if (!userStr) {
+              console.warn('No user info available, login may fail');
             }
           }
 
