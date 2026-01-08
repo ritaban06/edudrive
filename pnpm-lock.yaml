@@ -156,6 +156,9 @@ importers:
       '@capacitor/app':
         specifier: 6.0.3
         version: 6.0.3(@capacitor/core@6.2.1)
+      '@capacitor/browser':
+        specifier: 6.0.3
+        version: 6.0.3(@capacitor/core@6.2.1)
       '@capacitor/cli':
         specifier: 6.2.1
         version: 6.2.1
@@ -625,6 +628,11 @@ packages:
     resolution: {integrity: sha512-ohz/OUq61Y1Fc6aVSt0uDrUdeOA7oTH4pkWDbv/8I3UrPjH7oPkzYhShuDRUjekNp9RBi198VSFdt0CetpEOzw==}
     engines: {node: '>=10.3.0'}
     hasBin: true
+
+  '@capacitor/browser@6.0.3':
+    resolution: {integrity: sha512-V5/ViE+fy3rW+6w0L2du4747/hivBcI/5OGOKi01U9YdFvOWbiiGL+qetq1QdkANEqvYd4yoCeXZL2GyGySn5g==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
 
   '@capacitor/cli@5.7.8':
     resolution: {integrity: sha512-qN8LDlREMhrYhOvVXahoJVNkP8LP55/YPRJrzTAFrMqlNJC18L3CzgWYIblFPnuwfbH/RxbfoZT/ydkwgVpMrw==}
@@ -6717,6 +6725,10 @@ snapshots:
       - react-native-b4a
       - supports-color
       - typescript
+
+  '@capacitor/browser@6.0.3(@capacitor/core@6.2.1)':
+    dependencies:
+      '@capacitor/core': 6.2.1
 
   '@capacitor/cli@5.7.8':
     dependencies:

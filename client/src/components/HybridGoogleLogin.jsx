@@ -33,11 +33,11 @@ const HybridGoogleLogin = () => {
   };
 
   // Redirect-based OAuth handler (recommended for Capacitor)
-  const handleRedirectOAuth = () => {
+  const handleRedirectOAuth = async () => {
     setIsLoading(true);
     setError('');
     try {
-      initiateGoogleOAuth();
+      await initiateGoogleOAuth();
     } catch (error) {
       console.error('Failed to initiate OAuth:', error);
       setError('Failed to start Google login. Please try again.');
