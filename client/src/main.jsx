@@ -2,15 +2,16 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import { App as CapacitorApp } from '@capacitor/app'
+import { App as CapacitorApp, Capacitor } from '@capacitor/app'
 
-// Redirect mobile browsers to GitHub repo
+// Redirect mobile browsers to GitHub repo (but not the Capacitor app)
 const isMobileBrowser = () => {
   const ua = navigator.userAgent;
-  // Check if it's a mobile device AND not running in Capacitor
+  // Check if it's a mobile device
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-  const isCapacitor = window.Capacitor !== undefined;
-  return isMobile && !isCapacitor;
+  // Check if NOT running in Capacitor (native app)
+  const isNativeApp = Capacitor.isNativePlatform();
+  return isMobile && !isNativeApp;
 };
 
 if (isMobileBrowser()) {
