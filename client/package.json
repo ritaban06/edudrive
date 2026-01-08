@@ -14,7 +14,8 @@
     "cap:run": "pnpm run build && cap sync android && cap open android",
     "android:build": "cd android && gradlew assembleDebug",
     "android:release": "cd android && gradlew assembleRelease",
-    "android:install": "cd android && gradlew installDebug"
+    "android:install": "cd android && gradlew installDebug",
+    "android:release:prod": "pnpm run build && cap sync android && cd android && gradlew assembleRelease"
   },
   "dependencies": {
     "@capacitor/android": "6.2.1",
