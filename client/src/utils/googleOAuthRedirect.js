@@ -1,7 +1,7 @@
 // Redirect-based Google OAuth utility
 // Use this for both web and Capacitor Android apps
 
-const BACKEND_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+const BACKEND_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://edudrive.onrender.com/api';
 
 /**
  * Initiates Google OAuth redirect flow
