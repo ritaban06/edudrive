@@ -173,7 +173,11 @@ router.post('/:pdfId/view', [
       },
       process.env.JWT_SECRET
     );
-    const viewUrl = `/api/pdfs/proxy/${pdf.googleDriveFileId}?token=${token}`;
+    
+    // Use absolute URL for mobile apps, relative URL for web
+    const baseUrl = process.env.API_BASE_URL || 'https://edudrive.onrender.com';
+    const viewUrl = `${baseUrl}/api/pdfs/proxy/${pdf.googleDriveFileId}?token=${token}`;
+    
     res.json({
       viewUrl,
       pdf: {

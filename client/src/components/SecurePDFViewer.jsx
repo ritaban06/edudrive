@@ -178,6 +178,8 @@ const SecurePDFViewer = ({ pdfId, isOpen, onClose }) => {
         console.log('[SecurePDFViewer] Proxy URL received:', response.data.viewUrl);
         try {
           console.log('[SecurePDFViewer] Fetching PDF from proxy URL:', response.data.viewUrl);
+          console.log('[SecurePDFViewer] Using token:', token?.substring(0, 20) + '...');
+          
           const pdfResponse = await fetch(response.data.viewUrl, {
             method: 'GET',
             headers: {
@@ -189,21 +191,33 @@ const SecurePDFViewer = ({ pdfId, isOpen, onClose }) => {
           });
 
           console.log('[SecurePDFViewer] PDF proxy fetch response:', pdfResponse.status, pdfResponse.statusText);
-          if (!pdfResponse.ok) {
-            console.error('[SecurePDFViewer] PDF proxy fetch failed:', pdfResponse.status, pdfResponse.statusText);
-            const errorText = await pdfResponse.text();
-            console.error('[SecurePDFViewer] Error response:', errorText);
-            throw new Error(`HTTP ${pdfResponse.status}: ${pdfResponse.statusText}`);
-          }
-
-          // Check content type to prevent binary downloads
+          
+          // Check content type first
           const contentType = pdfResponse.headers.get('content-type');
           console.log('[SecurePDFViewer] Content-Type:', contentType);
           
+          if (!pdfResponse.ok) {
+            console.error('[SecurePDFViewer] PDF proxy fetch failed:', pdfResponse.status, pdfResponse.statusText);
+            const errorText = await pdfResponse.text();
+            console.error('[SecurePDFViewer] Error response body:', errorText);
+            console.error('[SecurePDFViewer] First 500 chars:', errorText.substring(0, 500));
+            
+            const errorMsg = `HTTP ${pdfResponse.status}: ${pdfResponse.statusText}. Content-Type: ${contentType}. Check console for details.`;
+            toast.error(errorMsg, { duration: 8000 });
+            throw new Error(errorMsg);
+          }
+          
           // Accept both PDF and octet-stream (sometimes PDFs are served as binary)
           if (contentType && !contentType.includes('application/pdf') && !contentType.includes('octet-stream')) {
-            console.warn('[SecurePDFViewer] Unexpected content type:', contentType);
-            throw new Error(`Expected PDF but received: ${contentType}`);
+            // Get preview of response to help debug
+            const responseClone = pdfResponse.clone();
+            const previewText = await responseClone.text();
+            console.error('[SecurePDFViewer] Unexpected content type:', contentType);
+            console.error('[SecurePDFViewer] Response preview (first 500 chars):', previewText.substring(0, 500));
+            
+            const errorMsg = `Expected PDF but received: ${contentType}. The server returned HTML instead of PDF. Check console logs.`;
+            toast.error(errorMsg, { duration: 8000 });
+            throw new Error(errorMsg);
           }
 
           const pdfBlob = await pdfResponse.blob();
