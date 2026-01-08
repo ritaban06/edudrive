@@ -13,14 +13,14 @@
   },
   "android": {
     "buildOptions": {
-      "keystorePath": "",
+      "keystorePath": "E:\\projects\\edudrive\\android.keystore",
       "keystoreAlias": "edudrive"
     }
   },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 2000,
-      "backgroundColor": "#1B1C4B",
+      "backgroundColor": "#000000",
       "androidScaleType": "CENTER_CROP",
       "showSpinner": false,
       "androidSplashResourceName": "splash",
