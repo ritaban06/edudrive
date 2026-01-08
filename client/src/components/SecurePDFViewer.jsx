@@ -175,23 +175,24 @@ const SecurePDFViewer = ({ pdfId, isOpen, onClose }) => {
       }
 
       if (response.data.viewUrl) {
-        // console.log('[SecurePDFViewer] Proxy URL received:', response.data.viewUrl);
+        console.log('[SecurePDFViewer] Proxy URL received:', response.data.viewUrl);
         try {
-          // console.log('[SecurePDFViewer] Fetching PDF from proxy URL:', response.data.viewUrl);
+          console.log('[SecurePDFViewer] Fetching PDF from proxy URL:', response.data.viewUrl);
           const pdfResponse = await fetch(response.data.viewUrl, {
             method: 'GET',
             headers: {
               'Accept': 'application/pdf',
-              'Content-Type': 'application/pdf',
               'Authorization': `Bearer ${token}`
             },
             credentials: 'include',
             mode: 'cors'
           });
 
-          // console.log('[SecurePDFViewer] PDF proxy fetch response:', pdfResponse.status, pdfResponse.statusText);
+          console.log('[SecurePDFViewer] PDF proxy fetch response:', pdfResponse.status, pdfResponse.statusText);
           if (!pdfResponse.ok) {
             console.error('[SecurePDFViewer] PDF proxy fetch failed:', pdfResponse.status, pdfResponse.statusText);
+            const errorText = await pdfResponse.text();
+            console.error('[SecurePDFViewer] Error response:', errorText);
             throw new Error(`HTTP ${pdfResponse.status}: ${pdfResponse.statusText}`);
           }
 
@@ -218,33 +219,65 @@ const SecurePDFViewer = ({ pdfId, isOpen, onClose }) => {
             new Blob([pdfBlob], { type: 'application/pdf' });
 
           const blobUrl = URL.createObjectURL(correctedBlob);
-          // console.log('[SecurePDFViewer] PDF blob URL created:', blobUrl);
+          console.log('[SecurePDFViewer] PDF blob URL created:', blobUrl);
 
           setPdfUrl(blobUrl);
           setPdfInfo(response.data.pdf);
           setUseIframeFallback(false);
-          // console.log('[SecurePDFViewer] PDF blob URL set successfully');
+          console.log('[SecurePDFViewer] PDF blob URL set successfully');
 
         } catch (fetchError) {
           console.error('[SecurePDFViewer] Failed to fetch PDF content from proxy:', fetchError);
+          console.error('[SecurePDFViewer] Fetch error details:', {
+            name: fetchError.name,
+            message: fetchError.message,
+            stack: fetchError.stack
+          });
           
           // For Android: Don't use iframe fallback as it shows websites
           // Instead show error and let user retry
-          setError('Failed to load PDF. Please check your connection and try again.');
-          toast.error('Failed to load PDF');
+          const errorMsg = `Failed to load PDF: ${fetchError.message}`;
+          console.error('[SecurePDFViewer] PDF Load Error:', errorMsg);
+          setError(errorMsg + '. Please check your connection and try again.');
+          toast.error(errorMsg, { duration: 5000 });
         }
       } else {
-        // console.error('[SecurePDFViewer] No viewUrl in response:', response.data);
-        throw new Error('Failed to get PDF view URL');
+        const errorMsg = 'Failed to get PDF view URL from server';
+        console.error('[SecurePDFViewer] No viewUrl in response:', response.data);
+        toast.error(errorMsg, { duration: 5000 });
+        throw new Error(errorMsg);
       }
     } catch (error) {
       console.error('[SecurePDFViewer] Error fetching PDF URL:', error);
+      console.error('[SecurePDFViewer] Error details:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        message: error.message
+      });
+      
+      let errorMsg = 'Failed to load PDF';
+      
       if (error.response?.status === 401) {
-        setError('Authentication failed. Please log in again.');
-        toast.error('Please log in again to view PDFs');
+        errorMsg = 'Authentication failed. Please log in again.';
+        setError(errorMsg);
+        toast.error(errorMsg, { duration: 5000 });
+      } else if (error.response?.status === 404) {
+        errorMsg = 'PDF not found';
+        setError(errorMsg);
+        toast.error(errorMsg, { duration: 5000 });
+      } else if (error.response?.status === 403) {
+        errorMsg = 'Access denied to this PDF';
+        setError(errorMsg);
+        toast.error(errorMsg, { duration: 5000 });
+      } else if (error.message.includes('Network') || error.message.includes('network')) {
+        errorMsg = `Network error: ${error.message}`;
+        setError(errorMsg);
+        toast.error(errorMsg, { duration: 5000 });
       } else {
-        setError(error.response?.data?.error || error.message || 'Failed to load PDF');
-        toast.error('Failed to load PDF');
+        errorMsg = error.response?.data?.error || error.message || 'Failed to load PDF';
+        setError(errorMsg);
+        toast.error(`Error: ${errorMsg}`, { duration: 5000 });
       }
     } finally {
       setIsLoading(false);
