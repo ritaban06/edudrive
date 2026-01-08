@@ -21,23 +21,25 @@ const AppLoginSuccess = () => {
         const result = handleOAuthCallback();
 
         if (result.success) {
-          // Store token in localStorage with correct key
+          // Store token in localStorage
           localStorage.setItem('authToken', result.token);
           
-          // Get user info from localStorage
+          // Get user info from cookie or localStorage
           const userStr = localStorage.getItem('user');
           if (userStr) {
-            const user = JSON.parse(userStr);
-            // Manually set auth state
-            window.location.href = '/dashboard';
-            return;
+            try {
+              const user = JSON.parse(userStr);
+              console.log('User info found:', user);
+            } catch (e) {
+              console.error('Failed to parse user info:', e);
+            }
           }
 
           setStatus('success');
           
-          // Redirect to dashboard after 1.5 seconds
+          // Force page reload to reinitialize auth context
           setTimeout(() => {
-            navigate('/dashboard');
+            window.location.href = '/dashboard';
           }, 1500);
         } else {
           setStatus('error');
