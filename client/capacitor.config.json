@@ -1,0 +1,31 @@
+{
+  "appId": "app.edudrive.client",
+  "appName": "EduDrive",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https",
+    "allowNavigation": [
+      "edudrive-client.vercel.app",
+      "accounts.google.com",
+      "*.googleapis.com",
+      "localhost"
+    ]
+  },
+  "android": {
+    "buildOptions": {
+      "keystorePath": "",
+      "keystoreAlias": "edudrive"
+    }
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#1B1C4B",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "androidSplashResourceName": "splash",
+      "splashFullScreen": true,
+      "splashImmersive": true
+    }
+  }
+}

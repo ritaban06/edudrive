@@ -9,6 +9,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Header';
 import DashboardPage from './pages/DashboardPage';
 import Landingpage from './pages/Landingpage';
+import AppLoginSuccess from './pages/AppLoginSuccess';
 // import SearchPage from './pages/SearchPage';
 import AuthDebug from './components/AuthDebug';
 import { Analytics } from "@vercel/analytics/react";
@@ -61,6 +62,7 @@ function AppContent() {
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/landing" element={<Landingpage />} />
+        <Route path="/app-login-success" element={<AppLoginSuccess />} />
         {/* Redirect any authenticated-only routes back to landing */}
         <Route path="/dashboard" element={<Landingpage />} />
         {/* All other routes go to landing for non-authenticated users */}
