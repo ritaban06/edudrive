@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, CheckCircle, Loader2, Smartphone, Globe } from 'lucide-react';
-import PlatformAuthService from '../services/platformAuthService';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
 import { initiateGoogleOAuth } from '../utils/googleOAuthRedirect';
@@ -12,14 +11,6 @@ const HybridGoogleLogin = () => {
   const { googleSignIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [platformInfo, setPlatformInfo] = useState(null);
-
-  useEffect(() => {
-    // Get platform information
-    const info = PlatformAuthService.getPlatformInfo();
-    setPlatformInfo(info);
-    console.log('🔍 Platform Info:', info);
-  }, []);
 
   const handleWebGoogleSuccess = async (credentialResponse) => {
     setIsLoading(true);
@@ -27,35 +18,11 @@ const HybridGoogleLogin = () => {
 
     try {
       await googleSignIn(credentialResponse);
-      // Show success toast and redirect to dashboard
-      // toast.success('Successfully signed in!');
       navigate('/dashboard');
     } catch (error) {
       console.error('Web Google sign-in error:', error);
       setError(error.message || 'Failed to sign in with Google. Please try again.');
       toast.error('Failed to sign in with Google. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleNativeGoogleSignIn = async () => {
-    setIsLoading(true);
-    setError('');
-
-    try {
-      // Use native Google Auth service
-      const credentials = await PlatformAuthService.signInWithGoogle();
-      await googleSignIn(credentials);
-      // Show success toast and redirect to dashboard
-      // toast.success('Successfully signed in!');
-      navigate('/dashboard');
-      
-      // Send to backend using the same flow as web
-      await googleSignIn(credentials);
-    } catch (error) {
-      console.error('Native Google sign-in error:', error);
-      setError(error.message || 'Failed to sign in with Google. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -78,14 +45,6 @@ const HybridGoogleLogin = () => {
     }
   };
 
-  if (!platformInfo) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin text-gray-600" />
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="space-y-3 sm:space-y-4">
@@ -96,21 +55,6 @@ const HybridGoogleLogin = () => {
           <p className="text-sm sm:text-base text-white">
             Only approved users can access this platform
           </p>
-          
-          {/* Platform indicator */}
-          <div className="mt-2 flex items-center justify-center space-x-2 text-xs text-gray-500">
-            {platformInfo.isNative ? (
-              <>
-                {/* <Smartphone className="h-3 w-3" />
-                <span>Mobile App ({platformInfo.platform})</span> */}
-              </>
-            ) : (
-              <>
-                {/* <Globe className="h-3 w-3" />
-                <span className="text-white">Web Browser</span> */}
-              </>
-            )}
-          </div>
         </div>
 
         {error && (

@@ -1,5 +1,21 @@
 apply plugin: 'com.android.application'
 
+def getPassword(String propertyName, String prompt) {
+    if (project.hasProperty(propertyName)) {
+        return project.property(propertyName)
+    }
+    if (System.getenv(propertyName)) {
+        return System.getenv(propertyName)
+    }
+    // Prompt for password
+    if (System.console()) {
+        return new String(System.console().readPassword("\n" + prompt + ": "))
+    }
+    // Fallback: read from standard input (works with Gradle daemon)
+    println("\n" + prompt + ": ")
+    return new String(System.in.newReader().readLine())
+}
+
 android {
     namespace "app.edudrive.client"
     compileSdk rootProject.ext.compileSdkVersion
@@ -16,8 +32,19 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    
+    signingConfigs {
+        release {
+            storeFile file("E:\\projects\\edudrive\\android.keystore")
+            storePassword getPassword('KEYSTORE_PASSWORD', 'Enter keystore password')
+            keyAlias "edudrive"
+            keyPassword getPassword('KEY_PASSWORD', 'Enter key password')
+        }
+    }
+    
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

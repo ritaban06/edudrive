@@ -1,0 +1,8 @@
+{
+  "android": {
+    "icon": {
+      "sources": ["assets/icon.png"],
+      "backgroundColor": "#000000"
+    }
+  }
+}
