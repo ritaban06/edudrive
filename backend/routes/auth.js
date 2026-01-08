@@ -301,15 +301,15 @@ router.get('/google/callback', async (req, res) => {
     if (error) {
       console.error('Google OAuth error:', error);
       const errorUrl = platform === 'android' 
-        ? `edudrive://login?error=${encodeURIComponent(error)}`
-        : `${CLIENT_URL}/login?error=${encodeURIComponent(error)}`;
+        ? `edudrive://app-login-success?error=${encodeURIComponent(error)}`
+        : `${CLIENT_URL}/app-login-success?error=${encodeURIComponent(error)}`;
       return res.redirect(errorUrl);
     }
 
     if (!code) {
       const errorUrl = platform === 'android'
-        ? `edudrive://login?error=${encodeURIComponent('No authorization code received')}`
-        : `${CLIENT_URL}/login?error=${encodeURIComponent('No authorization code received')}`;
+        ? `edudrive://app-login-success?error=${encodeURIComponent('No authorization code received')}`
+        : `${CLIENT_URL}/app-login-success?error=${encodeURIComponent('No authorization code received')}`;
       return res.redirect(errorUrl);
     }
 
@@ -328,18 +328,24 @@ router.get('/google/callback', async (req, res) => {
 
     // Check if email is verified
     if (!email_verified) {
-      return res.redirect(`${CLIENT_URL}/login?error=${encodeURIComponent('Email not verified')}`);
+      const errorUrl = platform === 'android'
+        ? `edudrive://app-login-success?error=${encodeURIComponent('Email not verified')}`
+        : `${CLIENT_URL}/app-login-success?error=${encodeURIComponent('Email not verified')}`;
+      return res.redirect(errorUrl);
     }
 
     // Check if user is in approved list
     const approvalResult = await googleSheetsService.isUserApproved(email);
     
     if (!approvalResult.approved) {
-      return res.redirect(
-        `${CLIENT_URL}/login?error=${encodeURIComponent(
-          `Access denied. Your email (${email}) is not in the approved users list.`
-        )}`
-      );
+      const errorUrl = platform === 'android'
+        ? `edudrive://app-login-success?error=${encodeURIComponent(
+            `Access denied. Your email (${email}) is not in the approved users list.`
+          )}`
+        : `${CLIENT_URL}/app-login-success?error=${encodeURIComponent(
+            `Access denied. Your email (${email}) is not in the approved users list.`
+          )}`;
+      return res.redirect(errorUrl);
     }
 
     // Generate device ID for this login
@@ -449,8 +455,8 @@ router.get('/google/callback', async (req, res) => {
     }
     
     const errorUrl = platform === 'android'
-      ? `edudrive://login?error=${encodeURIComponent('Authentication failed. Please try again.')}`
-      : `${CLIENT_URL}/login?error=${encodeURIComponent('Authentication failed. Please try again.')}`;
+      ? `edudrive://app-login-success?error=${encodeURIComponent('Authentication failed. Please try again.')}`
+      : `${CLIENT_URL}/app-login-success?error=${encodeURIComponent('Authentication failed. Please try again.')}`;
     
     res.redirect(errorUrl);
   }
