@@ -175,10 +175,10 @@ const SecurePDFViewer = ({ pdfId, isOpen, onClose }) => {
       }
 
       if (response.data.viewUrl) {
-        console.log('[SecurePDFViewer] Proxy URL received:', response.data.viewUrl);
+        // console.log('[SecurePDFViewer] Proxy URL received:', response.data.viewUrl);
         try {
-          console.log('[SecurePDFViewer] Fetching PDF from proxy URL:', response.data.viewUrl);
-          console.log('[SecurePDFViewer] Using token:', token?.substring(0, 20) + '...');
+          // console.log('[SecurePDFViewer] Fetching PDF from proxy URL:', response.data.viewUrl);
+          // console.log('[SecurePDFViewer] Using token:', token?.substring(0, 20) + '...');
           
           const pdfResponse = await fetch(response.data.viewUrl, {
             method: 'GET',
@@ -190,11 +190,11 @@ const SecurePDFViewer = ({ pdfId, isOpen, onClose }) => {
             mode: 'cors'
           });
 
-          console.log('[SecurePDFViewer] PDF proxy fetch response:', pdfResponse.status, pdfResponse.statusText);
+          // console.log('[SecurePDFViewer] PDF proxy fetch response:', pdfResponse.status, pdfResponse.statusText);
           
           // Check content type first
           const contentType = pdfResponse.headers.get('content-type');
-          console.log('[SecurePDFViewer] Content-Type:', contentType);
+          // /fconsole.log('[SecurePDFViewer] Content-Type:', contentType);
           
           if (!pdfResponse.ok) {
             console.error('[SecurePDFViewer] PDF proxy fetch failed:', pdfResponse.status, pdfResponse.statusText);
@@ -233,12 +233,12 @@ const SecurePDFViewer = ({ pdfId, isOpen, onClose }) => {
             new Blob([pdfBlob], { type: 'application/pdf' });
 
           const blobUrl = URL.createObjectURL(correctedBlob);
-          console.log('[SecurePDFViewer] PDF blob URL created:', blobUrl);
+          // console.log('[SecurePDFViewer] PDF blob URL created:', blobUrl);
 
           setPdfUrl(blobUrl);
           setPdfInfo(response.data.pdf);
           setUseIframeFallback(false);
-          console.log('[SecurePDFViewer] PDF blob URL set successfully');
+          // console.log('[SecurePDFViewer] PDF blob URL set successfully');
 
         } catch (fetchError) {
           console.error('[SecurePDFViewer] Failed to fetch PDF content from proxy:', fetchError);
