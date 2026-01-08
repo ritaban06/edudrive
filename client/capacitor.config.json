@@ -26,6 +26,11 @@
       "androidSplashResourceName": "splash",
       "splashFullScreen": true,
       "splashImmersive": true
+    },
+    "App": {
+      "appUrlOpen": {
+        "enabled": true
+      }
     }
   }
 }

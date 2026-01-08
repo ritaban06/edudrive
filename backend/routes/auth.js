@@ -399,14 +399,29 @@ router.get('/google/callback', async (req, res) => {
       path: '/'
     });
 
-    // Redirect to success page with token in URL (fallback for cookie issues)
-    res.redirect(`${CLIENT_URL}/app-login-success?token=${token}`);
+    // Detect if request is from Android app (Capacitor sends a specific user agent)
+    const userAgent = req.get('User-Agent') || '';
+    const isAndroidApp = userAgent.includes('Capacitor') || userAgent.includes('edudrive');
+    
+    // Redirect to success page with token in URL
+    // Use custom URL scheme for Android app, regular URL for web
+    const redirectUrl = isAndroidApp 
+      ? `edudrive://app-login-success?token=${token}`
+      : `${CLIENT_URL}/app-login-success?token=${token}`;
+    
+    res.redirect(redirectUrl);
 
   } catch (error) {
     console.error('Google OAuth callback error:', error);
-    res.redirect(
-      `${CLIENT_URL}/login?error=${encodeURIComponent('Authentication failed. Please try again.')}`
-    );
+    
+    // Detect platform for error redirect too
+    const userAgent = req.get('User-Agent') || '';
+    const isAndroidApp = userAgent.includes('Capacitor') || userAgent.includes('edudrive');
+    const errorUrl = isAndroidApp
+      ? `edudrive://login?error=${encodeURIComponent('Authentication failed. Please try again.')}`
+      : `${CLIENT_URL}/login?error=${encodeURIComponent('Authentication failed. Please try again.')}`;
+    
+    res.redirect(errorUrl);
   }
 });
 
