@@ -4,24 +4,38 @@ import './index.css'
 import App from './App.jsx'
 import { App as CapacitorApp } from '@capacitor/app'
 
-// Handle deep links for OAuth callback
-CapacitorApp.addListener('appUrlOpen', (data) => {
-  console.log('Deep link opened:', data.url);
-  
-  // Check if this is our OAuth callback
-  if (data.url.startsWith('edudrive://app-login-success')) {
-    // Extract the path and query parameters
-    const url = new URL(data.url);
-    const path = url.pathname || '/app-login-success';
-    const search = url.search;
-    
-    // Navigate to the callback page with the token
-    window.location.href = `${path}${search}`;
-  }
-});
+// Redirect mobile browsers to GitHub repo
+const isMobileBrowser = () => {
+  const ua = navigator.userAgent;
+  // Check if it's a mobile device AND not running in Capacitor
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+  const isCapacitor = window.Capacitor !== undefined;
+  return isMobile && !isCapacitor;
+};
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+if (isMobileBrowser()) {
+  // Redirect to GitHub repo
+  window.location.href = 'https://github.com/ritaban06/edudrive/releases';
+} else {
+  // Handle deep links for OAuth callback
+  CapacitorApp.addListener('appUrlOpen', (data) => {
+    console.log('Deep link opened:', data.url);
+    
+    // Check if this is our OAuth callback
+    if (data.url.startsWith('edudrive://app-login-success')) {
+      // Extract the path and query parameters
+      const url = new URL(data.url);
+      const path = url.pathname || '/app-login-success';
+      const search = url.search;
+      
+      // Navigate to the callback page with the token
+      window.location.href = `${path}${search}`;
+    }
+  });
+
+  createRoot(document.getElementById('root')).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  )
+}
