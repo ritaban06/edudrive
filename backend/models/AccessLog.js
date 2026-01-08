@@ -27,6 +27,7 @@ const accessLogSchema = new mongoose.Schema({
       'register',
       'forced_logout',
       'google_login',
+      'google_oauth_redirect',
       'unauthorized_access_attempt',
       // Folder-related actions
       'folder_create',

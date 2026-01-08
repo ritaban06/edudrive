@@ -27,10 +27,15 @@ const GOOGLE_WEB_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const GOOGLE_ANDROID_CLIENT_ID_DEBUG = process.env.GOOGLE_ANDROID_CLIENT_ID_DEBUG;
 const GOOGLE_ANDROID_CLIENT_ID_RELEASE = process.env.GOOGLE_ANDROID_CLIENT_ID_RELEASE;
 const CLIENT_URL = process.env.CLIENT_URL;
+const BACKEND_URL = process.env.BACKEND_VERCEL_URL || process.env.BACKEND_DROPLET_URL || 'http://localhost:5000';
 // Note: Android OAuth clients don't have client secrets
 
 // Create OAuth2 clients for each platform
-const googleWebClient = new OAuth2Client(GOOGLE_WEB_CLIENT_ID, GOOGLE_WEB_CLIENT_SECRET);
+const googleWebClient = new OAuth2Client(
+  GOOGLE_WEB_CLIENT_ID, 
+  GOOGLE_WEB_CLIENT_SECRET,
+  `${BACKEND_URL}/api/auth/google/callback`
+);
 const googleAndroidClientDebug = GOOGLE_ANDROID_CLIENT_ID_DEBUG ? new OAuth2Client(GOOGLE_ANDROID_CLIENT_ID_DEBUG) : null;
 const googleAndroidClientRelease = GOOGLE_ANDROID_CLIENT_ID_RELEASE ? new OAuth2Client(GOOGLE_ANDROID_CLIENT_ID_RELEASE) : null;
 
@@ -250,6 +255,161 @@ router.post('/login', [
   }
 });
 
+// Google OAuth redirect - Initiates redirect-based OAuth flow
+router.get('/google', (req, res) => {
+  try {
+    const authUrl = googleWebClient.generateAuthUrl({
+      access_type: 'offline',
+      scope: ['openid', 'email', 'profile'],
+      prompt: 'consent'
+    });
+    
+    console.log('Redirecting to Google OAuth:', authUrl);
+    res.redirect(authUrl);
+  } catch (error) {
+    console.error('Google OAuth redirect error:', error);
+    res.status(500).json({
+      error: 'Failed to initiate Google OAuth',
+      message: error.message
+    });
+  }
+});
+
+// Google OAuth callback - Handles redirect from Google
+router.get('/google/callback', async (req, res) => {
+  try {
+    const { code, error } = req.query;
+
+    // Handle OAuth errors
+    if (error) {
+      console.error('Google OAuth error:', error);
+      return res.redirect(`${CLIENT_URL}/login?error=${encodeURIComponent(error)}`);
+    }
+
+    if (!code) {
+      return res.redirect(`${CLIENT_URL}/login?error=${encodeURIComponent('No authorization code received')}`);
+    }
+
+    // Exchange authorization code for tokens
+    const { tokens } = await googleWebClient.getToken(code);
+    googleWebClient.setCredentials(tokens);
+
+    // Verify the ID token
+    const ticket = await googleWebClient.verifyIdToken({
+      idToken: tokens.id_token,
+      audience: GOOGLE_WEB_CLIENT_ID
+    });
+
+    const payload = ticket.getPayload();
+    const { email, name, sub: googleId, picture, email_verified } = payload;
+
+    // Check if email is verified
+    if (!email_verified) {
+      return res.redirect(`${CLIENT_URL}/login?error=${encodeURIComponent('Email not verified')}`);
+    }
+
+    // Check if user is in approved list
+    const approvalResult = await googleSheetsService.isUserApproved(email);
+    
+    if (!approvalResult.approved) {
+      return res.redirect(
+        `${CLIENT_URL}/login?error=${encodeURIComponent(
+          `Access denied. Your email (${email}) is not in the approved users list.`
+        )}`
+      );
+    }
+
+    // Generate device ID for this login
+    const deviceId = generateDeviceId(req);
+
+    // Create or update user
+    const userData = {
+      email,
+      name: approvalResult.userData.name || name,
+      department: approvalResult.userData.department,
+      year: parseInt(approvalResult.userData.year) || 0,
+      semester: parseInt(approvalResult.userData.semester) || 0,
+      googleId,
+      picture,
+      loginMethod: 'google',
+      lastLogin: new Date(),
+      isActive: true
+    };
+
+    let user = await User.findOne({ email }).select('+deviceId');
+    
+    if (user) {
+      Object.assign(user, userData);
+      user.deviceId = deviceId;
+      await user.save();
+    } else {
+      user = new User({ ...userData, deviceId });
+      await user.save();
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { 
+        userId: user._id, 
+        email: user.email,
+        role: user.role,
+        deviceId
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    );
+
+    // Log access
+    try {
+      await AccessLog.logAccess({
+        userId: user._id,
+        action: 'google_oauth_redirect',
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent'),
+        deviceId
+      });
+    } catch (logError) {
+      console.error('Access log error:', logError);
+    }
+
+    // Set secure HTTP-only cookie with the token
+    res.cookie('auth_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+      sameSite: 'none', // Required for cross-origin requests (Capacitor)
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: '/'
+    });
+
+    // Also set user info cookie (non-httpOnly for client access)
+    res.cookie('user_info', JSON.stringify({
+      id: user._id,
+      email: user.email,
+      name: user.name,
+      department: user.department,
+      year: user.year,
+      semester: user.semester,
+      picture: user.picture,
+      role: user.role
+    }), {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/'
+    });
+
+    // Redirect to success page with token in URL (fallback for cookie issues)
+    res.redirect(`${CLIENT_URL}/app-login-success?token=${token}`);
+
+  } catch (error) {
+    console.error('Google OAuth callback error:', error);
+    res.redirect(
+      `${CLIENT_URL}/login?error=${encodeURIComponent('Authentication failed. Please try again.')}`
+    );
+  }
+});
+
 // Logout user
 router.post('/logout', async (req, res) => {
   try {
@@ -279,6 +439,20 @@ router.post('/logout', async (req, res) => {
         console.log('Token validation failed during logout:', error.message);
       }
     }
+
+    // Clear auth cookies
+    res.clearCookie('auth_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none',
+      path: '/'
+    });
+    res.clearCookie('user_info', {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none',
+      path: '/'
+    });
 
     res.json({ message: 'Logout successful' });
   } catch (error) {

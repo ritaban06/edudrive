@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">EduDrive</string>
+    <string name="title_activity_main">EduDrive</string>
+    <string name="package_name">app.edudrive.client</string>
+    <string name="custom_url_scheme">app.edudrive.client</string>
+</resources>
