@@ -2,7 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import { App as CapacitorApp, Capacitor } from '@capacitor/app'
+import { App as CapacitorApp } from '@capacitor/app'
+import { Capacitor } from '@capacitor/core'
 
 // Redirect mobile browsers to GitHub repo (but not the Capacitor app)
 const isMobileBrowser = () => {
