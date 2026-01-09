@@ -14,6 +14,23 @@ const AppLoginSuccess = () => {
   const [status, setStatus] = useState('processing'); // processing, success, error
   const [error, setError] = useState('');
 
+  // Ensure the body uses the same purple gradient while this page is visible
+  useEffect(() => {
+    const prevBackground = document.body.style.background || '';
+    const prevBackgroundImage = document.body.style.backgroundImage || '';
+    const prevBackgroundColor = document.body.style.backgroundColor || '';
+
+    document.body.style.background = 'linear-gradient(135deg, #1b0b42 0%, #24125a 50%, #2d176b 100%)';
+    document.body.style.backgroundImage = 'none';
+    document.body.style.backgroundColor = 'transparent';
+
+    return () => {
+      document.body.style.background = prevBackground;
+      document.body.style.backgroundImage = prevBackgroundImage;
+      document.body.style.backgroundColor = prevBackgroundColor;
+    };
+  }, []);
+
   useEffect(() => {
     const processCallback = async () => {
       try {
@@ -71,15 +88,18 @@ const AppLoginSuccess = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+    <div
+      className="min-h-screen bg-gradient-to-br from-[#1b0b42] via-[#24125a] to-[#2d176b] flex items-center justify-center p-4"
+      style={{ background: 'linear-gradient(135deg, #1b0b42 0%, #24125a 50%, #2d176b 100%)' }}
+    >
+      <div className="bg-[rgba(255,255,255,0.06)] backdrop-blur-md rounded-2xl shadow-2xl p-8 max-w-md w-full text-center border border-[rgba(255,255,255,0.15)]">
         {status === 'processing' && (
           <>
-            <Loader2 className="h-16 w-16 text-blue-600 animate-spin mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            <Loader2 className="h-16 w-16 text-purple-400 animate-spin mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-white mb-2">
               Completing Sign In...
             </h2>
-            <p className="text-gray-600">
+            <p className="text-white/80">
               Please wait while we authenticate your account
             </p>
           </>
@@ -87,11 +107,11 @@ const AppLoginSuccess = () => {
 
         {status === 'success' && (
           <>
-            <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            <CheckCircle className="h-16 w-16 text-green-400 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-white mb-2">
               Success!
             </h2>
-            <p className="text-gray-600">
+            <p className="text-white/80">
               You've been signed in successfully. Redirecting to dashboard...
             </p>
           </>
@@ -99,14 +119,14 @@ const AppLoginSuccess = () => {
 
         {status === 'error' && (
           <>
-            <XCircle className="h-16 w-16 text-red-600 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            <XCircle className="h-16 w-16 text-red-400 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-white mb-2">
               Authentication Failed
             </h2>
-            <p className="text-red-600 mb-4">
+            <p className="text-red-400 mb-4">
               {error}
             </p>
-            <p className="text-gray-600 text-sm">
+            <p className="text-white/60 text-sm">
               Redirecting to login page...
             </p>
           </>
