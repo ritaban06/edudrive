@@ -5,18 +5,19 @@ import App from './App.jsx'
 import { App as CapacitorApp } from '@capacitor/app'
 import { Capacitor } from '@capacitor/core'
 
-// Redirect mobile browsers to GitHub repo (but not the Capacitor app)
-const isMobileBrowser = () => {
+// Redirect Android browsers to GitHub repo (but not the Capacitor app or iOS devices)
+const isAndroidBrowser = () => {
   const ua = navigator.userAgent;
-  // Check if it's a mobile device
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+  // Check if it's an Android device
+  const isAndroid = /Android/i.test(ua);
   // Check if NOT running in Capacitor (native app)
   const isNativeApp = Capacitor.isNativePlatform();
-  return isMobile && !isNativeApp;
+  // Only redirect Android browsers, allow iOS to access the website
+  return isAndroid && !isNativeApp;
 };
 
-if (isMobileBrowser()) {
-  // Redirect to GitHub repo
+if (isAndroidBrowser()) {
+  // Redirect to GitHub repo for Android app download
   window.location.href = 'https://github.com/ritaban06/edudrive/releases';
 } else {
   // Handle deep links for OAuth callback
