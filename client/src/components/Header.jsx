@@ -94,18 +94,6 @@ const Header = () => {
       {/* Desktop Navigation */}
       <nav className="hidden md:flex space-x-4">
         {/* <Link
-          to="/dashboard"
-          className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-            isActive('/dashboard') || isActive('/')
-              ? 'bg-purple-500/20 text-white'
-              : 'text-white/80 hover:text-white hover:bg-purple-500/20'
-          }`}
-        >
-          <Home className="h-4 w-4" />
-          <span>Dashboard</span>
-        </Link> */}
-
-        {/* <Link
           to="/search"
           className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
             isActive('/search')
@@ -117,7 +105,6 @@ const Header = () => {
           <span>Search</span>
         </Link> */}
 
-        
       </nav>
 
       {/* Desktop User Info and Actions */}

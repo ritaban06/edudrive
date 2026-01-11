@@ -10,6 +10,7 @@ import Header from './components/Header';
 import DashboardPage from './pages/DashboardPage';
 import Landingpage from './pages/Landingpage';
 import AppLoginSuccess from './pages/AppLoginSuccess';
+import PrivacyPage from './pages/PrivacyPage';
 // import SearchPage from './pages/SearchPage';
 import AuthDebug from './components/AuthDebug';
 import { Analytics } from "@vercel/analytics/react";
@@ -61,6 +62,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/landing" element={<Landingpage />} />
         <Route path="/app-login-success" element={<AppLoginSuccess />} />
         {/* Redirect any authenticated-only routes back to landing */}
@@ -79,6 +81,7 @@ function AppContent() {
         <Routes>
           {/* Redirect authenticated users to dashboard when they visit root or landing */}
         <Route path="/" element={<DashboardPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/landing" element={<DashboardPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/dashboard/folder/:folderId" element={<DashboardPage />} />

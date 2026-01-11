@@ -135,6 +135,13 @@ const Landingpage = () => {
                 )}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#6c47ff]/70 rounded-full group-hover:w-full transition-all duration-300"></span>
               </button>
+              <a 
+                href="/privacy" 
+                className="text-white/60 hover:text-white text-sm transition-colors duration-300 bg-transparent relative group"
+              >
+                Privacy
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#6c47ff]/70 rounded-full group-hover:w-full transition-all duration-300"></span>
+              </a>
             </nav>
             
             {/* Desktop Login Button */}
@@ -204,6 +211,13 @@ const Landingpage = () => {
                 >
                   Contact
                 </button>
+                <a
+                  href="/privacy"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block w-full text-left px-3 py-3 text-white/70 border-l-2 border-transparent text-sm font-medium rounded-md hover:bg-white/5 transition-colors duration-300"
+                >
+                  Privacy
+                </a>
               </div>
               <div className="px-5 py-4 border-t border-white/5">
                 <a
