@@ -19,3 +19,21 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Capacitor
+-keep class com.getcapacitor.** { *; }
+-keep class com.capacitorjs.** { *; }
+
+# Cordova plugins (used by Capacitor)
+-keep class org.apache.cordova.** { *; }
+
+# Google Sign-In
+-keep class com.google.android.gms.auth.api.signin.** { *; }
+-keep class com.google.android.gms.common.api.** { *; }
+
+# JSON (used internally)
+-keep class org.json.** { *; }
+
+# Prevent warnings
+-dontwarn com.getcapacitor.**
+-dontwarn org.apache.cordova.**
