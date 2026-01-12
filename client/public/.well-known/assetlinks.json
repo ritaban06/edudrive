@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.edudrive.client",
+      "sha256_cert_fingerprints": [
+        "6A:DB:14:8A:7F:D8:32:74:84:E5:E8:23:FC:86:66:BB:4E:04:F9:7C:AB:90:DD:6D:2E:35:B8:EA:A1:6E:3E:20"
+      ]
+    }
+  }
+]
