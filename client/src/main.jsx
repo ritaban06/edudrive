@@ -18,7 +18,7 @@ const isAndroidBrowser = () => {
 
 if (isAndroidBrowser()) {
   // Redirect to GitHub repo for Android app download
-  window.location.href = 'https://github.com/ritaban06/edudrive/releases';
+  window.location.href = 'https://github.com/ritaban06/edudrive/releases/tag/latest';
 } else {
   // Handle deep links for OAuth callback
   CapacitorApp.addListener('appUrlOpen', (data) => {
